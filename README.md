@@ -4,7 +4,7 @@ A github repo for my Personal Passion Project @ Devine
 
 Klant: De klant voor dit project is het Wereldnatuurfonds. 
 
-Core Project Statement: Het doel van dit project is om een stukker dieper te gaan op het gebied van 3D op het web. 
+Core Project Statement: Het doel van dit project is om een stuk dieper te gaan op het gebied van 3D op het web. 
 Hierbij wil ik BabylonJS verder uitspitten. Uiteindelijk wil ik mijn opgedane kennis omzetten in een interactieve webervaring 
 waarbij 3D (BabylonJS) en muziek (ToneJS) samenkomen waarbij ik het WNF probeer te steunen. 
 
