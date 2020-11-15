@@ -1,0 +1,110 @@
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    min-height: 100%;
+    position: relative;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+    font-size: 4rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+*:focus {
+    outline: 2px solid #d71ef7;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+li {
+    list-style-type: none;
+}
+
+.container {
+    max-width: 96rem;
+    vertical-align: center;
+    margin: 0 auto;
+}
+
+
+.hidden {
+    display: none;
+}
+
+.has-js {
+    display: none;
+}
+
+body {
+    height: 100%;
+    background-color: #FFD43C;
+
+}
+
+.flex__img, .flex__sliders , .flex__filters, .flex__settings {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex__sliders {
+    flex-direction: column;
+    margin-top: 3rem;
+}
+
+.flex__filters label {
+    margin-left: 4rem;
+}
+
+.flex__settings {
+    flex-direction: column;
+}
+
+.flex__filters {
+    margin-top: 3rem;
+}
+
+.rotate {
+    -webkit-animation: spin 4s linear infinite;
+    -moz-animation: spin 4s linear infinite;
+    animation: spin 4s linear infinite;
+    
+}
+
+.paused {
+    -webkit-animation-play-state: paused;
+    -moz-animation-play-state: paused;
+    -o-animation-play-state: paused;
+    animation-play-state: paused;
+}
+
+
+@-moz-keyframes spin {
+    100% {
+        -moz-transform: rotate(360deg);
+    }
+}
+
+@-webkit-keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

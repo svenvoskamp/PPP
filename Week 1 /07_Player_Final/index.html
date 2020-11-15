@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07_Player_Final</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <audio src="./assets/audio/sound.mp3"></audio>
+    <h1>Click on the CD to play:</h1>
+    <div class="flex__img">
+        <img class="img__cd rotate paused" src="./assets/img/cd.png" alt="cd">
+    </div>
+    <div class="flex__settings">
+        <div class="flex__sliders">
+            <label for="volume">Volume:</label>
+            <input type="range" id="volume" min="0" max="2" value="1" step="0.01">
+            <label for="panner">Panner:</label>
+            <input type="range" id="panner" min="-1" max="1" value="0" step="0.01">
+        </div>
+        <div class="flex__filters">
+            <label for="filter">LowpassFilter:</label>
+            <input type="checkbox" id="lowpass">
+            <label for="filter">HighpassFilter:</label>
+            <input type="checkbox" id="highpass">
+            <label for="distortion">Distortion:</label>
+            <input type="checkbox" id="distortion">
+            <label for="reverb">Reverb:</label>
+            <input type="checkbox" id="reverb">
+            <label for="iirfilter">IIRFilter:</label>
+            <input type="checkbox" id="iirfilter">
+        </div>
+    </div>
+
+    <script src="./js/script.js"></script>
+</body>
+
+</html>
