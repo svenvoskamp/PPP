@@ -4,7 +4,11 @@ const audioContext = new AudioContext();
 const audioElement = document.querySelector('audio');
 const sound = audioContext.createMediaElementSource(audioElement);
 const gainNode = new GainNode(audioContext);
-sound.connect(gainNode).connect(audioContext.destination);
+const pannerOptions = {
+    pan: 0
+};
+const panner = new StereoPannerNode(audioContext, pannerOptions);
+sound.connect(gainNode).connect(panner).connect(audioContext.destination);
 
 const playButton = document.querySelector('button');
 
@@ -33,4 +37,10 @@ const volumeControl = document.querySelector('#volume');
 
 volumeControl.addEventListener('input', () => {
     gainNode.gain.value = volumeControl.value;
+});
+
+const pannerControl = document.querySelector('#panner');
+
+pannerControl.addEventListener('input', () => {
+    panner.pan.value = pannerControl.value;
 });
