@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>02_3D_Scene_Audio</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div id="start">
+        <button id="button">Start the experience!</button>
+    </div>
+    <canvas id="c"></canvas>
+    <label for="volume">Volume:</label>
+    <input type="range" id="volume" min="0" max="2" value="1" step="0.01">
+    <script type="module">
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.module.js';
+        import {GUI} from './libs/dat.gui.module.js';
+        import {FirstPersonControls} from './libs/FirstPersonControls.js';
+
+ 
+    
+
+
+
+
+        let camera, scene, renderer, light;
+
+        const clock = new THREE.Clock();
+
+        const startButton = document.getElementById('button');
+        startButton.addEventListener( 'click', init );
+        
+        async function init() {
+            const start = document.getElementById('start');
+            start.remove();
+
+            // Canvas aanmaken 
+
+            const canvas = document.querySelector('#c');
+            const renderer = new THREE.WebGLRenderer({canvas});
+            
+            // Camera aanmaken 
+
+            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+            camera.position.set( 0, 15, 0 );
+
+            // AudioListener aanmaken 
+            const listener = new THREE.AudioListener();
+            camera.add( listener );
+            console.log(listener.context);
+
+            
+                
+                
+       
+            
+            // Scene Aanmaken
+            
+            scene = new THREE.Scene();
+            scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
+            scene.background = new THREE.Color( 0xffffff );
+            console.log(scene);
+
+            // Licht aanmaken 
+
+            light = new THREE.DirectionalLight( 0xffffff );
+            light.position.set( 0, 0.5, 1 );
+            scene.add( light );
+
+            // Helper Aanmaken
+
+            
+
+            // Ground aanmaken
+
+            const geometry = new THREE.PlaneGeometry( 1000, 1000 );
+            const material = new THREE.MeshPhongMaterial( {color: 0x6622aa, flatShading: true, side: THREE.DoubleSide});
+            const plane = new THREE.Mesh( geometry, material );
+            plane.position.set(0, 0, -100);
+            plane.rotation.x = Math.PI / 2;
+            scene.add( plane );
+
+            // Sphere aanmaken
+
+            const sphere = new THREE.SphereBufferGeometry( 5, 20, 20 );
+            const domeSphere = new THREE.SphereBufferGeometry( 50, 100, 100 );
+
+            // Materials Sphere aanmaken
+
+            const material1 = new THREE.MeshPhongMaterial( { color: 0xffaa00, flatShading: true } );
+            const material2 = new THREE.MeshPhongMaterial( { color: 0x143331, flatShading: true } );
+            const material3 = new THREE.MeshPhongMaterial( { color: 0x662200, flatShading: true } );
+            const domeMaterial1 = new THREE.MeshPhongMaterial({color: 0xffaa00, flatShading: true, opacity: 0.3, transparent: true,  side: THREE.DoubleSide});
+            const domeMaterial2 = new THREE.MeshPhongMaterial({color: 0x143331, flatShading: true, opacity: 0.3, transparent: true,  side: THREE.DoubleSide});
+            const domeMaterial3 = new THREE.MeshPhongMaterial({color: 0x662200, flatShading: true, opacity: 0.3, transparent: true,  side: THREE.DoubleSide});
+
+            // Audio Aanmaken Spheres 
+
+            const createReverb = async type => {
+                const convolver = new ConvolverNode(listener.context);
+                let response = await fetch(`./assets/sound/${type}`);
+                let arraybuffer = await response.arrayBuffer();
+                convolver.buffer = await listener.context.decodeAudioData(arraybuffer);
+                return convolver;
+            }
+            let reverb = await createReverb("church.wav");
+            console.log(reverb);
+
+
+            const audioLoader = new THREE.AudioLoader();
+
+            const object1 = new THREE.Mesh( sphere, domeMaterial1 );
+            object1.position.set(-140, 5, -150 );
+            scene.add(object1);
+
+            const sound1 = new THREE.PositionalAudio(listener);
+				audioLoader.load( './assets/sound/techno.mp3', (buffer) => {
+					sound1.setBuffer(buffer);
+                    sound1.setRefDistance(0.5);
+                    sound1.setLoop(true);
+                    sound1.setVolume(5);
+                    sound1.setFilter(reverb);
+                    sound1.play();
+                    console.log(sound1);
+			    });
+            object1.add(sound1);
+            
+            const dome1 = new THREE.Mesh(domeSphere, domeMaterial1);
+            dome1.position.set(-140, 5, -150 );
+            scene.add(dome1);
+
+            const object2 = new THREE.Mesh( sphere, material2 );
+            object2.position.set(140, 5, -150 );
+            scene.add(object2);
+
+            const sound2 = new THREE.PositionalAudio(listener);
+				audioLoader.load( './assets/sound/jazz.mp3', (buffer) => {
+					sound2.setBuffer( buffer );
+                    sound2.setRefDistance(0.5);
+                    sound2.setLoop(true);
+                    sound2.play();
+                    sound2.setVolume(2)
+			});
+            object2.add(sound2);
+            
+            const dome2 = new THREE.Mesh(domeSphere, domeMaterial2);
+            dome2.position.set(140, 5, -150 );
+            scene.add(dome2);
+
+            const object3 = new THREE.Mesh( sphere, material3 );
+            object3.position.set( 0, 5, - 300 );
+            scene.add( object3 );
+
+            const sound3 = new THREE.PositionalAudio(listener);
+				audioLoader.load( './assets/sound/guitar.mp3', (buffer) => {
+					sound3.setBuffer( buffer );
+                    sound3.setRefDistance(0.5);
+                    sound3.setLoop(true);
+                    sound3.play();
+                    sound3.setVolume(4);
+			});
+            object3.add(sound3);
+            
+            const dome3 = new THREE.Mesh(domeSphere, domeMaterial3);
+            dome3.position.set(0, 5, - 300);
+            scene.add(dome3);
+
+            const resizeRendererToDisplaySize = renderer => {
+                const needResize = canvas.width !== window.innerWidth ||
+                    canvas.height !== window.innerHeight;
+                if (needResize) {
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                }
+                return needResize;
+            }
+
+            const SoundControls = function () {
+                this.firstSphere = sound1.getVolume();
+                this.secondSphere = sound2.getVolume();
+                this.thirdSphere = sound3.getVolume();
+            };
+
+            const gui = new GUI();
+            const soundControls = new SoundControls();
+
+            const volumeFolder = gui.addFolder( 'sound volume' );
+
+            volumeFolder.add( soundControls, 'firstSphere' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+                sound1.setVolume( soundControls.firstSphere );
+                });
+                volumeFolder.add( soundControls, 'secondSphere' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+                sound2.setVolume( soundControls.secondSphere );
+                });
+                volumeFolder.add( soundControls, 'thirdSphere' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
+                sound3.setVolume( soundControls.thirdSphere );
+                });
+
+            const controls = new FirstPersonControls( camera, renderer.domElement );
+
+            controls.movementSpeed = 50;
+            controls.lookSpeed = 0.06;
+            controls.noFly = true;
+            controls.lookVertical = false;
+            const volumeControl = document.querySelector('#volume');
+
+            volumeControl.addEventListener('input', () => {
+                listener.gain.gain.value = volumeControl.value;
+            });
+
+            animate();
+
+			function animate() {
+                controls.update(clock.getDelta());
+                requestAnimationFrame( animate );
+                resizeRendererToDisplaySize(renderer);
+                renderer.render(scene, camera );
+            }  
+        }
+
+    </script>
+</body>
+
+</html>

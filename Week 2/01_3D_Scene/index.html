@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>01_3D_Scene</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <div id="start">
+        <button id="button">Start the experience!</button>
+    </div>
+    <canvas id="c"></canvas>
+    <script type="module">
+        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.module.js';
+
+        let camera, scene, renderer, light;
+
+        const startButton = document.getElementById('button');
+        startButton.addEventListener( 'click', init );
+        
+        function init() {
+            const start = document.getElementById('start');
+            start.remove();
+
+            const canvas = document.querySelector('#c');
+            const renderer = new THREE.WebGLRenderer({canvas});
+            
+            
+            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
+            camera.position.set( 0, 20, 0 );
+            
+            scene = new THREE.Scene();
+    
+            light = new THREE.DirectionalLight( 0xffffff );
+            light.position.set( 0, 0.5, 1 );
+            scene.add( light );
+
+            const geometry = new THREE.PlaneGeometry( 1000, 1000 );
+            const material = new THREE.MeshPhongMaterial( {color: 0x6622aa, flatShading: true, side: THREE.DoubleSide});
+            const plane = new THREE.Mesh( geometry, material );
+            plane.position.set(0, 0, -100);
+            plane.rotation.x = Math.PI / 2;
+            scene.add( plane );
+
+            const sphere = new THREE.SphereBufferGeometry( 5, 20, 20 );
+
+            const material1 = new THREE.MeshPhongMaterial( { color: 0xffaa00, flatShading: true } );
+            const material2 = new THREE.MeshPhongMaterial( { color: 0xff2200, flatShading: true } );
+            const material3 = new THREE.MeshPhongMaterial( { color: 0x662200, flatShading: true } );
+
+            const mesh1 = new THREE.Mesh( sphere, material1 );
+            mesh1.position.set(-120, 5, -150 );
+            scene.add(mesh1);
+
+            const mesh2 = new THREE.Mesh( sphere, material2 );
+            mesh2.position.set(120, 5, -150 );
+            scene.add(mesh2);
+
+            const mesh3 = new THREE.Mesh( sphere, material3 );
+            mesh3.position.set( 0, 5, - 300 );
+            scene.add( mesh3 );
+
+            const resizeRendererToDisplaySize = renderer => {
+                const needResize = canvas.width !== window.innerWidth ||
+                    canvas.height !== window.innerHeight;
+                if (needResize) {
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                }
+                return needResize;
+            }
+
+            animate();
+
+			function animate() {
+
+                requestAnimationFrame( animate );
+                resizeRendererToDisplaySize(renderer);
+                renderer.render(scene, camera );
+
+            }  
+        }
+
+    </script>
+</body>
+
+</html>

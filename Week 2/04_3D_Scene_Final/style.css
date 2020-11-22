@@ -1,0 +1,64 @@
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    min-height: 100%;
+    position: relative;
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+*:focus {
+    outline: 2px solid #d71ef7;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+li {
+    list-style-type: none;
+}
+
+
+#c {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.buttons__flex {
+    display: flex;
+    justify-content: space-around;
+    width: 20vw;
+}
+
+
+
+.active {
+    color: red;
+}
+
+.hidden {
+    display: none;
+}
