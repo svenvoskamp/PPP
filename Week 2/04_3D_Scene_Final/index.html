@@ -202,26 +202,7 @@
                 return needResize;
             }
 
-            const SoundControls = function () {
-                this.firstSphere = sound1.getVolume();
-                this.secondSphere = sound2.getVolume();
-                this.thirdSphere = sound3.getVolume();
-            };
-
-            const gui = new GUI();
-            const soundControls = new SoundControls();
-
-            const volumeFolder = gui.addFolder( 'sound volume' );
-
-            volumeFolder.add( soundControls, 'firstSphere' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
-                sound1.setVolume( soundControls.firstSphere );
-                });
-                volumeFolder.add( soundControls, 'secondSphere' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
-                sound2.setVolume( soundControls.secondSphere );
-                });
-                volumeFolder.add( soundControls, 'thirdSphere' ).min( 0.0 ).max( 1.0 ).step( 0.01 ).onChange( function () {
-                sound3.setVolume( soundControls.thirdSphere );
-                });
+            
 
             const controls = new FirstPersonControls( camera, renderer.domElement );
 
