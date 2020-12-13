@@ -1,0 +1,66 @@
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    height: 100%;
+
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    height: 100%;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+*:focus {
+    outline: 2px solid #d71ef7;
+}
+
+h1 {
+    font-weight: bold;
+    font-size: 2.4rem;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+li {
+    list-style-type: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.flex__keyboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#keyboard {
+    position: absolute;
+    bottom: 0rem;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#c {
+    width: 100% !important;
+    height: 100% !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}

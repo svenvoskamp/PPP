@@ -80,6 +80,7 @@ playButton.addEventListener('click', () => {
     }else {
         playButton.classList.add('paused');
     }
+
     if (audioContext.state === 'suspended') {
         audioContext.resume();
     }

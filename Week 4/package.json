@@ -1,0 +1,47 @@
+{
+  "name": "int4_code",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@google-cloud/storage": "^5.0.1",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "firebase": "^7.15.0",
+    "gsap": "^3.5.1",
+    "mobx": "^5.15.4",
+    "mobx-react-lite": "^2.0.0-alpha.5",
+    "nexusui": "^2.1.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-globe": "^5.0.2",
+    "react-lottie": "^1.2.3",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "react-three-fiber": "^5.3.4",
+    "stats.js": "^0.17.0",
+    "three": "^0.123.0",
+    "tone": "^14.7.58"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

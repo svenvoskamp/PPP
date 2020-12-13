@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>08_Piano_Interactivity</title>
+    <link rel="stylesheet" href="./reset.css">
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+    <div class="loading">
+        <h1>loading...</h1>
+    </div>
+    <div class="buttons">
+        <button class="start">Start recording</button>
+    </div>
+    <div class="audio"></div>
+    <div class="flex__keyboard">
+        <div id="keyboard"></div>
+    </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.68/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nexusui@latest/dist/NexusUI.js"></script>
+    <script src="js/loader.js"></script>
+
+    <script>
+        const recorder = new Tone.Recorder();
+
+       
+        let piano;
+        console.log(recorder);
+        const samples = SampleLibrary.load({
+            instruments: ['piano'],
+            baseUrl: "./samples/"
+        })
+
+
+        const stopRecording = async () => {
+            const recording = await recorder.stop();
+            console.log(recording);
+            const $audio = document.createElement(`audio`);
+            console.log($audio);
+            $audio.src = URL.createObjectURL(recording);
+            $audio.controls = true;
+            const audioDiv = document.querySelector(`.audio`);
+            audioDiv.appendChild($audio);
+
+        }
+
+        const startRecording = () => {
+            startButton.remove();
+            const $stopButton = document.createElement(`button`);
+            $stopButton.innerHTML = `Stop recording`;
+            const $buttons = document.querySelector(`.buttons`);
+            $buttons.appendChild($stopButton)
+            $stopButton.addEventListener(`click`, stopRecording);
+            piano.connect(recorder);
+            recorder.start();
+
+        }
+
+        const startButton = document.querySelector(`.start`);
+        startButton.addEventListener(`click`, startRecording);
+
+
+
+
+        const loadPiano = () => {
+
+            document.querySelector(".loading").style.display = 'none';
+            piano = samples['piano'];
+            piano.release = .5;
+            piano.toDestination();
+
+            const keyboardUI = new Nexus.Piano('keyboard', {
+                'size': [1300, 250],
+                'lowNote': 12,
+                'highNote': 108
+            })
+
+            const midiValue = 60;
+            const note = Tone.Frequency(midiValue, "midi").toNote();
+            console.log(note);
+
+            keyboardUI.on('change', (note) => {
+                if (note.state === true) {
+                    piano.triggerAttack(Tone.Frequency(note.note, "midi").toNote());
+                } else if (note.state === false) {
+                    piano.triggerRelease(Tone.Frequency(note.note, "midi").toNote());
+                }
+            })
+        }
+
+        Tone.loaded().then(loadPiano);
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>06_Samples
+    </title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.68/Tone.js"></script>
+    <script>
+        document.documentElement.addEventListener("mousedown", () => {
+            mouse_IsDown = true;
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
+            }
+        })
+
+
+        const init = () => {
+            const sampler = new Tone.Sampler({
+                urls: {
+                    "C4": "C4.mp3",
+                    "D#4": "Ds4.mp3",
+                    "F#4": "Fs4.mp3",
+                    "A4": "A4.mp3",
+                },
+                release: 1,
+                baseUrl: "https://tonejs.github.io/audio/salamander/",
+            }).toDestination();
+
+            Tone.loaded().then(() => {
+                sampler.triggerAttackRelease(["C3"], 4);
+            })
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

@@ -1,323 +1,354 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>04_Scene_Final</title>
-    <link rel="stylesheet" href="./style.css">
-</head>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
 
-<body>
+  <body>
     <div id="start">
-        <button id="startButton">Start the experience!</button>
+      <button id="startButton">Start the experience!</button>
     </div>
     <canvas id="c"></canvas>
-    <div class = "center hidden">
-        <h1>Move with WASD and mouse or with the arrow keys and mouse</h1>
-        <div class = "buttons__flex">
-            <button id="cityButton">City</button>
-            <button id="parkButton">Park</button>
-            <button id="uniButton">Uni</button>
-        </div>
-        <label for="volume">Volume:</label>
-        <input type="range" id="volume" min="0" max="2" value="1" step="0.01">
-    </div>      
+    <div class="center hidden">
+      <h1>Move with WASD and mouse or with the arrow keys and mouse</h1>
+      <div class="buttons__flex">
+        <button id="cityButton">City</button>
+        <button id="parkButton">Park</button>
+        <button id="uniButton">Uni</button>
+      </div>
+      <label for="volume">Volume:</label>
+      <input type="range" id="volume" min="0" max="2" value="1" step="0.01" />
+    </div>
     <script type="module">
-        import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.module.js';
-        import {GUI} from './libs/dat.gui.module.js';
-        import {FirstPersonControls} from './libs/FirstPersonControls.js';
+      import * as THREE from 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r122/three.module.js';
+      import { GUI } from './libs/dat.gui.module.js';
+      import { FirstPersonControls } from './libs/FirstPersonControls.js';
 
-        let camera, scene, renderer, light;
+      let camera, scene, renderer, light, ambience, ambienceElement;
 
-        const clock = new THREE.Clock();
+      const clock = new THREE.Clock();
 
-        const startButton = document.getElementById('startButton');
-        startButton.addEventListener( 'click', init );
+      const startButton = document.getElementById('startButton');
+      startButton.addEventListener('click', init);
 
-       
-        
-        async function init() {
-            const start = document.getElementById('start');
-            start.remove();
-            const $div = document.querySelector(`.center`);
-            $div.classList.remove(`hidden`);
-     
+      async function init() {
+        const start = document.getElementById('start');
+        start.remove();
+        const $div = document.querySelector(`.center`);
+        $div.classList.remove(`hidden`);
 
-            // Canvas aanmaken 
+        // Canvas aanmaken
 
-            const canvas = document.querySelector('#c');
-            const renderer = new THREE.WebGLRenderer({canvas});
-            
-            // Camera aanmaken 
+        const canvas = document.querySelector('#c');
+        const renderer = new THREE.WebGLRenderer({ canvas });
 
-            camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 10000 );
-            camera.position.set( 0, 15, 0 );
+        // Camera aanmaken
 
-            // AudioListener aanmaken 
-            const listener = new THREE.AudioListener();
-            camera.add( listener );
+        camera = new THREE.PerspectiveCamera(
+          50,
+          window.innerWidth / window.innerHeight,
+          1,
+          10000
+        );
+        camera.position.set(0, 15, 0);
 
-            
-                
-                
-    
-            // Scene Aanmaken
-            
-            scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2( 0xffffff, 0.002 );
-            scene.background = new THREE.Color( 0xffffff );
+        // AudioListener aanmaken
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
 
+        // Scene Aanmaken
 
-            // Licht aanmaken 
+        scene = new THREE.Scene();
+        scene.fog = new THREE.FogExp2(0xffffff, 0.002);
+        scene.background = new THREE.Color(0xffffff);
 
-            light = new THREE.DirectionalLight( 0xffffff );
-            light.position.set( 0, 0.5, 1 );
-            scene.add( light );
+        // Licht aanmaken
 
-            // Helper Aanmaken
+        light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 0.5, 1);
+        scene.add(light);
 
-            
+        // Helper Aanmaken
 
-            // Ground aanmaken
+        // Ground aanmaken
 
-            const geometry = new THREE.PlaneGeometry( 1000, 1000 );
-            const material = new THREE.MeshPhongMaterial( {color: 0x6622aa, flatShading: true, side: THREE.DoubleSide});
-            const plane = new THREE.Mesh( geometry, material );
-            plane.position.set(0, 0, -100);
-            plane.rotation.x = Math.PI / 2;
-            scene.add( plane );
+        const geometry = new THREE.PlaneGeometry(1000, 1000);
+        const material = new THREE.MeshPhongMaterial({
+          color: 0x6622aa,
+          flatShading: true,
+          side: THREE.DoubleSide,
+        });
+        const plane = new THREE.Mesh(geometry, material);
+        plane.position.set(0, 0, -100);
+        plane.rotation.x = Math.PI / 2;
+        scene.add(plane);
 
-            // Sphere aanmaken
+        // Sphere aanmaken
 
-            const sphere = new THREE.SphereBufferGeometry( 5, 20, 20 );
-            const domeSphere = new THREE.SphereBufferGeometry( 50, 100, 100 );
+        const sphere = new THREE.SphereBufferGeometry(5, 20, 20);
+        const domeSphere = new THREE.SphereBufferGeometry(50, 100, 100);
 
-            // Materials Sphere aanmaken
+        // Materials Sphere aanmaken
 
-            const material1 = new THREE.MeshPhongMaterial( { color: 0xffaa00, flatShading: true } );
-            const material2 = new THREE.MeshPhongMaterial( { color: 0x143331, flatShading: true } );
-            const material3 = new THREE.MeshPhongMaterial( { color: 0x662200, flatShading: true } );
-            const domeMaterial1 = new THREE.MeshPhongMaterial({color: 0xffaa00, flatShading: true, opacity: 0.3, transparent: true,  side: THREE.DoubleSide});
-            const domeMaterial2 = new THREE.MeshPhongMaterial({color: 0x143331, flatShading: true, opacity: 0.3, transparent: true,  side: THREE.DoubleSide});
-            const domeMaterial3 = new THREE.MeshPhongMaterial({color: 0x662200, flatShading: true, opacity: 0.3, transparent: true,  side: THREE.DoubleSide});
+        const material1 = new THREE.MeshPhongMaterial({
+          color: 0xffaa00,
+          flatShading: true,
+        });
+        const material2 = new THREE.MeshPhongMaterial({
+          color: 0x143331,
+          flatShading: true,
+        });
+        const material3 = new THREE.MeshPhongMaterial({
+          color: 0x662200,
+          flatShading: true,
+        });
+        const domeMaterial1 = new THREE.MeshPhongMaterial({
+          color: 0xffaa00,
+          flatShading: true,
+          opacity: 0.3,
+          transparent: true,
+          side: THREE.DoubleSide,
+        });
+        const domeMaterial2 = new THREE.MeshPhongMaterial({
+          color: 0x143331,
+          flatShading: true,
+          opacity: 0.3,
+          transparent: true,
+          side: THREE.DoubleSide,
+        });
+        const domeMaterial3 = new THREE.MeshPhongMaterial({
+          color: 0x662200,
+          flatShading: true,
+          opacity: 0.3,
+          transparent: true,
+          side: THREE.DoubleSide,
+        });
 
-            // Audio Aanmaken Spheres 
+        // Audio Aanmaken Spheres
 
-            const createReverb = async type => {
-                const convolver = new ConvolverNode(listener.context);
-                let response = await fetch(`./assets/sound/${type}`);
-                let arraybuffer = await response.arrayBuffer();
-                convolver.buffer = await listener.context.decodeAudioData(arraybuffer);
-                return convolver;
-            }
-            let silo = await createReverb("silo.wav");
-            let drum = await createReverb("drum.wav");
-            let hall = await createReverb("hall.wav");
-            
+        const createReverb = async (type) => {
+          const convolver = new ConvolverNode(listener.context);
+          let response = await fetch(`./assets/sound/${type}`);
+          let arraybuffer = await response.arrayBuffer();
+          convolver.buffer = await listener.context.decodeAudioData(
+            arraybuffer
+          );
+          return convolver;
+        };
+        let silo = await createReverb('silo.wav');
+        let drum = await createReverb('drum.wav');
+        let hall = await createReverb('hall.wav');
 
+        const audioLoader = new THREE.AudioLoader();
 
-            const audioLoader = new THREE.AudioLoader();
+        const object1 = new THREE.Mesh(sphere, domeMaterial1);
+        object1.position.set(-140, 50, -150);
+        scene.add(object1);
 
-            const object1 = new THREE.Mesh( sphere, domeMaterial1 );
-            object1.position.set(-140, 50, -150 );
-            scene.add(object1);
+        const sound1 = new THREE.PositionalAudio(listener);
+        audioLoader.load('./assets/sound/techno.mp3', (buffer) => {
+          sound1.setBuffer(buffer);
+          sound1.setRefDistance(0.5);
+          sound1.setLoop(true);
+          sound1.play();
+        });
+        object1.add(sound1);
 
-            const sound1 = new THREE.PositionalAudio(listener);
-				audioLoader.load( './assets/sound/techno.mp3', (buffer) => {
-					sound1.setBuffer(buffer);
-                    sound1.setRefDistance(0.5);
-                    sound1.setLoop(true);
-                    sound1.play();
-			    });
-            object1.add(sound1);
-            
-            const dome1 = new THREE.Mesh(domeSphere, domeMaterial1);
-            dome1.position.set(-140, 5, -150 );
-            scene.add(dome1);
+        const dome1 = new THREE.Mesh(domeSphere, domeMaterial1);
+        dome1.position.set(-140, 5, -150);
+        scene.add(dome1);
 
-            const object2 = new THREE.Mesh( sphere, material2 );
-            object2.position.set(140, 50, -150 );
-            scene.add(object2);
+        const object2 = new THREE.Mesh(sphere, material2);
+        object2.position.set(140, 50, -150);
+        scene.add(object2);
 
-            const sound2 = new THREE.PositionalAudio(listener);
-				audioLoader.load( './assets/sound/jazz.mp3', (buffer) => {
-					sound2.setBuffer( buffer );
-                    sound2.setRefDistance(0.5);
-                    sound2.setLoop(true);
-                    sound2.play();
-    
-			});
-            object2.add(sound2);
-            
-            const dome2 = new THREE.Mesh(domeSphere, domeMaterial2);
-            dome2.position.set(140, 5, -150 );
-            scene.add(dome2);
+        const sound2 = new THREE.PositionalAudio(listener);
+        audioLoader.load('./assets/sound/jazz.mp3', (buffer) => {
+          sound2.setBuffer(buffer);
+          sound2.setRefDistance(0.5);
+          sound2.setLoop(true);
+          sound2.play();
+        });
+        object2.add(sound2);
 
-            const object3 = new THREE.Mesh( sphere, material3 );
-            object3.position.set( 0, 50, - 300 );
-            scene.add( object3 );
+        const dome2 = new THREE.Mesh(domeSphere, domeMaterial2);
+        dome2.position.set(140, 5, -150);
+        scene.add(dome2);
 
-            const sound3 = new THREE.PositionalAudio(listener);
-				audioLoader.load( './assets/sound/guitar.mp3', (buffer) => {
-					sound3.setBuffer( buffer );
-                    sound3.setRefDistance(0.5);
-                    sound3.setLoop(true);
-                    sound3.play();
+        const object3 = new THREE.Mesh(sphere, material3);
+        object3.position.set(0, 50, -300);
+        scene.add(object3);
 
-			});
-            object3.add(sound3);
+        const sound3 = new THREE.PositionalAudio(listener);
+        audioLoader.load('./assets/sound/guitar.mp3', (buffer) => {
+          sound3.setBuffer(buffer);
+          sound3.setRefDistance(0.5);
+          sound3.setLoop(true);
+          sound3.play();
+        });
+        object3.add(sound3);
 
-            const movingObject = new THREE.Mesh( sphere, material1);
-            movingObject.position.set(0, 5, -150);
-            scene.add(movingObject);
+        const movingObject = new THREE.Mesh(sphere, material1);
+        movingObject.position.set(0, 5, -150);
+        scene.add(movingObject);
 
-            const movingSound = new THREE.PositionalAudio(listener);
-            audioLoader.load( './assets/sound/horn.wav', (buffer) => {
-                movingSound.setBuffer(buffer);
-                movingSound.setLoop(false);
-                movingSound.setVolume(1);
-                setInterval(() => { movingSound.play(); } , 3000);
-            });
-            movingObject.add(movingSound);
-            
-            const dome3 = new THREE.Mesh(domeSphere, domeMaterial3);
-            dome3.position.set(0, 5, - 300);
-            scene.add(dome3);
+        const movingSound = new THREE.PositionalAudio(listener);
+        audioLoader.load('./assets/sound/horn.wav', (buffer) => {
+          movingSound.setBuffer(buffer);
+          movingSound.setLoop(false);
+          movingSound.setVolume(1);
+          setInterval(() => {
+            movingSound.play();
+          }, 3000);
+        });
+        movingObject.add(movingSound);
 
-            const environment = new THREE.Audio(listener);
-            audioLoader.load( './assets/sound/city.wav', (buffer) => {
-                environment.setBuffer(buffer);
-                environment.setLoop( true );
-                environment.setVolume( 0.05 );
-                environment.play();
-            });
+        const dome3 = new THREE.Mesh(domeSphere, domeMaterial3);
+        dome3.position.set(0, 5, -300);
+        scene.add(dome3);
 
-            const resizeRendererToDisplaySize = renderer => {
-                const needResize = canvas.width !== window.innerWidth ||
-                    canvas.height !== window.innerHeight;
-                if (needResize) {
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                }
-                return needResize;
-            }
+        const environment = new THREE.Audio(listener);
+        ambienceElement = new Audio(`./assets/sound/city.wav`);
+        ambienceElement.play();
+        environment.setMediaElementSource(ambienceElement);
+        environment.setLoop(true);
+        environment.setVolume(0.05);
+        environment.play();
 
-            
+        const resizeRendererToDisplaySize = (renderer) => {
+          const needResize =
+            canvas.width !== window.innerWidth ||
+            canvas.height !== window.innerHeight;
+          if (needResize) {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+          }
+          return needResize;
+        };
 
-            const controls = new FirstPersonControls( camera, renderer.domElement );
+        const controls = new FirstPersonControls(camera, renderer.domElement);
 
-            controls.movementSpeed = 50;
-            controls.lookSpeed = 0.06;
-            controls.noFly = true;
-            controls.lookVertical = false;
-            const volumeControl = document.querySelector('#volume');
+        controls.movementSpeed = 50;
+        controls.lookSpeed = 0.06;
+        controls.noFly = true;
+        controls.lookVertical = false;
+        const volumeControl = document.querySelector('#volume');
 
-            volumeControl.addEventListener('input', () => {
-                listener.gain.gain.value = volumeControl.value;
-            });
-            
-           
-          
-            let goRight = true;
-            animate();
+        volumeControl.addEventListener('input', () => {
+          listener.gain.gain.value = volumeControl.value;
+        });
 
-			function animate() {
-                controls.update(clock.getDelta());
-                requestAnimationFrame( animate );
-                resizeRendererToDisplaySize(renderer);
-                renderer.render(scene, camera );
-    
-                if(camera.position.x > -190 && camera.position.x < -90 && camera.position.z > -200 && camera.position.z < -100){
-                    sound1.setFilter(silo);
-                    sound1.setVolume(20);
-                } else {
-                    sound1.setFilter();
-                    sound1.setVolume(2);
-                }
-                if(camera.position.x > 90 && camera.position.x < 190 && camera.position.z > -200 && camera.position.z < -100){
-                    sound2.setFilter(hall);
-                    sound2.setVolume(6);
-                } else {
-                    sound2.setFilter();
-                    sound2.setVolume(1);
-                }
-                if(camera.position.x > -50 && camera.position.x < 50 && camera.position.z > -350 && camera.position.z < -250){
-                    sound3.setFilter(drum);
-                    sound3.setVolume(14);
-                } else {
-                    sound3.setFilter();
-                    sound3.setVolume(3);
-                }
-               
-                if(goRight){
-                    movingObject.position.x += 0.2;
-                }else {
-                    movingObject.position.x += -0.2;
-                }
-            
-                if(movingObject.position.x > 50) {
-                    goRight = false;
-                }
-            
-                if(movingObject.position.x < -50) {
-                    goRight = true;
-                }
-            }
-       
-           
+        let goRight = true;
+        animate();
 
-            const cityButton = document.getElementById('cityButton');
-            cityButton.addEventListener( 'click', () => {
-                setEnvironment("city.wav");
-                setMovingObject("horn.wav");
-            })
+        function animate() {
+          controls.update(clock.getDelta());
+          requestAnimationFrame(animate);
+          resizeRendererToDisplaySize(renderer);
+          renderer.render(scene, camera);
 
-            const parkButton = document.getElementById('parkButton');
-            parkButton.addEventListener( 'click', () => {
-                setEnvironment("park.wav");
-                setMovingObject("dog.wav");
-            })
+          if (
+            camera.position.x > -190 &&
+            camera.position.x < -90 &&
+            camera.position.z > -200 &&
+            camera.position.z < -100
+          ) {
+            sound1.setFilter(silo);
+            sound1.setVolume(20);
+          } else {
+            sound1.setFilter();
+            sound1.setVolume(2);
+          }
+          if (
+            camera.position.x > 90 &&
+            camera.position.x < 190 &&
+            camera.position.z > -200 &&
+            camera.position.z < -100
+          ) {
+            sound2.setFilter(hall);
+            sound2.setVolume(6);
+          } else {
+            sound2.setFilter();
+            sound2.setVolume(1);
+          }
+          if (
+            camera.position.x > -50 &&
+            camera.position.x < 50 &&
+            camera.position.z > -350 &&
+            camera.position.z < -250
+          ) {
+            sound3.setFilter(drum);
+            sound3.setVolume(14);
+          } else {
+            sound3.setFilter();
+            sound3.setVolume(3);
+          }
 
-            const uniButton = document.getElementById('uniButton');
-            uniButton.addEventListener( 'click', () => {
-                setEnvironment("uni.wav");
-                setMovingObject("pop.wav");
-            })
-            
-            function setEnvironment(sound) {
-                environment.pause();
-                audioLoader.load( `./assets/sound/${sound}`, (buffer) => {
-                    environment.setBuffer(buffer);
-                    if(sound == "uni.wav"){
-                        environment.setVolume(0.007);
-                    }
-                    else if(sound == "park.wav") {
-                        environment.setVolume(0.01);
-                    }else {
-                        environment.setVolume(0.05);
-                    }
-                    environment.play();
-                });
-            }
+          if (goRight) {
+            movingObject.position.x += 0.2;
+          } else {
+            movingObject.position.x += -0.2;
+          }
 
-            function setMovingObject(sound){
-                movingSound.pause();
-                audioLoader.load( `./assets/sound/${sound}`, (buffer) => {
-                    movingSound.setBuffer(buffer);
-                    if(sound == "pop.wav"){
-                        movingSound.setVolume(3);
-                    } else {
-                        movingSound.setVolume(1);
-                    }
-                    movingSound.play();
-            })
-           
+          if (movingObject.position.x > 50) {
+            goRight = false;
+          }
+
+          if (movingObject.position.x < -50) {
+            goRight = true;
+          }
         }
-    }
 
+        const cityButton = document.getElementById('cityButton');
+        cityButton.addEventListener('click', () => {
+          setEnvironment('city.wav');
+          setMovingObject('horn.wav');
+        });
 
+        const parkButton = document.getElementById('parkButton');
+        parkButton.addEventListener('click', () => {
+          setEnvironment('park.wav');
+          setMovingObject('dog.wav');
+        });
 
+        const uniButton = document.getElementById('uniButton');
+        uniButton.addEventListener('click', () => {
+          setEnvironment('uni.wav');
+          setMovingObject('pop.wav');
+        });
+
+        function setEnvironment(sound) {
+          environment.pause();
+          ambienceElement.pause();
+          ambienceElement = new Audio(`./assets/sound/${sound}`);
+          ambienceElement.play();
+          environment.setMediaElementSource(ambienceElement);
+          if (sound == 'uni.wav') {
+            environment.setVolume(0.007);
+          } else if (sound == 'park.wav') {
+            environment.setVolume(0.01);
+          } else {
+            environment.setVolume(0.05);
+          }
+          environment.play();
+          ambienceElement.play();
+        }
+
+        function setMovingObject(sound) {
+          movingSound.pause();
+          audioLoader.load(`./assets/sound/${sound}`, (buffer) => {
+            movingSound.setBuffer(buffer);
+            if (sound == 'pop.wav') {
+              movingSound.setVolume(3);
+            } else {
+              movingSound.setVolume(1);
+            }
+            movingSound.play();
+          });
+        }
+      }
     </script>
-</body>
-
+  </body>
 </html>

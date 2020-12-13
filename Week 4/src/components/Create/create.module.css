@@ -1,0 +1,46 @@
+@value tokens: "../../style/tokens.module.css";
+@value  redColor, yellowColor, pinkColor from tokens;
+
+
+.flex__keyboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.span {
+  color: redColor
+}
+
+.title {
+  color: black;
+  font-family: "Gulfs";
+  font-size: 5rem;
+  text-transform: uppercase;
+}
+
+.animals__flex {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  opacity: 1;
+}
+
+.animal__count {
+  font-size: 2.4rem;
+  color: black;
+  font-family: "Agrandir";
+  margin-left: 15rem;
+  bottom: 35rem;
+  position: absolute;
+}
+
+
+.tagline {
+  font-size: 1.8rem;
+  color: black;
+  font-family: "Agrandir";
+  margin-top: 2rem;
+}
+
+

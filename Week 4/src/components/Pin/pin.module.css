@@ -1,0 +1,16 @@
+@value tokens: "../../style/tokens.module.css";
+@value  redColor, yellowColor, pinkColor from tokens;
+
+
+.span {
+  color: redColor
+}
+
+.title {
+  color: black;
+  font-family: "Gulfs";
+  font-size: 5rem;
+  text-transform: uppercase;
+}
+
+

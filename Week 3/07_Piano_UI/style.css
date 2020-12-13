@@ -1,0 +1,41 @@
+html {
+    box-sizing: border-box;
+    font-size: 62.5%;
+    min-height: 100%;
+    position: relative;
+    font-family: 'Open Sans', sans-serif;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+*:focus {
+    outline: 2px solid #d71ef7;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+li {
+    list-style-type: none;
+}
+
+.hidden {
+    display: none;
+}
+
+.flex__keyboard {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#keyboard {
+    position: absolute;
+    bottom: 0;
+}

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07_Piano_UI</title>
+    <link rel="stylesheet" href="./style.css">
+
+</head>
+
+<body>
+    <div class = "flex__keyboard">
+        <div id="keyboard"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.68/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nexusui@latest/dist/NexusUI.js"></script>
+    <script>
+        const keyboardUI = new Nexus.Piano('keyboard', {
+            'size': [1300, 250]
+        })
+    </script>
+</body>
+
+</html>

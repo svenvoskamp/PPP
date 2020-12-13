@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04_DifferentSynths
+    </title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <button id ="fmsynth"></button>
+    <button id ="amsynth"></button>
+    <button id ="noisesynth"></button>
+    <button id ="polysynth"></button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.68/Tone.js"></script>
+    <script>
+
+
+        document.documentElement.addEventListener("mousedown",  () => {
+            mouse_IsDown = true;
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
+            }
+        })
+
+        const triggerFM = () => {
+                const fmSynth = new Tone.FMSynth().toDestination();
+                fmSynth.triggerAttackRelease("C5", "4n");
+            }
+
+        const triggerAM = () => {
+            const amSynth = new Tone.AMSynth().toDestination();
+            amSynth.triggerAttackRelease("C5", "4n");
+        }
+
+        const triggerNoise = () => {
+            const noiseSynth = new Tone.NoiseSynth().toDestination();
+            noiseSynth.triggerAttackRelease("8n", 0.05);
+        }
+        
+        const triggerPoly = () => {
+            const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+            const now = Tone.now()
+            synth.triggerAttack("D4", now);
+            synth.triggerAttack("F4", now + 0.5);
+            synth.triggerAttack("A4", now + 1);
+            synth.triggerAttack("C5", now + 1.5);
+            synth.triggerAttack("E5", now + 2);
+            synth.triggerRelease(["D4", "F4", "A4", "C5", "E5"], now + 4);
+        }
+
+        const init = () => {
+            const fm = document.getElementById("fmsynth");
+            const am = document.getElementById("amsynth");
+            const noise = document.getElementById("noisesynth");
+            const poly = document.getElementById("polysynth");
+
+            fm.addEventListener("click", triggerFM);
+            am.addEventListener("click", triggerAM);
+            noise.addEventListener("click", triggerNoise);
+            poly.addEventListener("click", triggerPoly);
+
+           
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

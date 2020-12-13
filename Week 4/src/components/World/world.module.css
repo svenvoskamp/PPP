@@ -1,0 +1,29 @@
+@value tokens: "../../style/tokens.module.css";
+@value  redColor, yellowColor, pinkColor from tokens;
+
+.white {
+  color: white;
+  font-size: 2.4rem;
+}
+.title {
+  color: pinkColor;
+  font-family: "Gulfs";
+  font-size: 5rem;
+  text-transform: uppercase;
+}
+
+
+.span {
+  color: redColor
+}
+
+.test {
+  color: redColor
+}
+
+.tagline {
+  font-size: 1.8rem;
+  color: pinkColor;
+  font-family: "Agrandir";
+  margin-top: 2rem;
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>05_Tone_Player
+    </title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.68/Tone.js"></script>
+    <script>
+
+
+        document.documentElement.addEventListener("mousedown",  () => {
+            mouse_IsDown = true;
+            if (Tone.context.state !== 'running') {
+                Tone.context.resume();
+            }
+        })
+
+
+        const init =  () => {
+            const player = new Tone.Player("https://tonejs.github.io/audio/berklee/gong_1.mp3").toDestination();
+            Tone.loaded().then(() => {
+                player.start();
+            });
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

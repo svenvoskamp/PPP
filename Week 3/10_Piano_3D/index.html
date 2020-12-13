@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10_Piano_3D</title>
+    <link rel="stylesheet" href="./reset.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <div class="loading">
+      <h1>loading...</h1>
+    </div>
+    <a href="./second.html">dadadadadadaddadaadda</a>
+    <div class="buttons">
+      <button class="start">Start recording</button>
+    </div>
+    <h1 class="octave">Octave: 4</h1>
+    <canvas id="c"></canvas>
+    <div class="flex__keyboard">
+      <div id="keyboard"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.68/Tone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/nexusui@latest/dist/NexusUI.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r123/three.min.js"></script>
+    <script src="js/loader.js"></script>
+
+    <script type="module">
+      import { FirstPersonControls } from './js/FirstPersonControls.js';
+      let camera,
+        scene,
+        renderer,
+        light,
+        piano,
+        keyboardUI,
+        stopButton,
+        controls,
+        startControls;
+      startControls = false;
+      const recorder = new Tone.Recorder();
+      const clock = new THREE.Clock();
+
+      const samples = SampleLibrary.load({
+        instruments: ['piano'],
+        baseUrl: './samples/',
+      });
+
+      let octave = 4;
+
+      const keyTones = {
+        a: 0,
+        w: 1,
+        s: 2,
+        e: 3,
+        d: 4,
+        f: 5,
+        t: 6,
+        g: 7,
+        y: 8,
+        h: 9,
+        u: 10,
+        j: 11,
+        k: 12,
+      };
+
+      const stopRecording = async () => {
+        const recording = await recorder.stop();
+        console.log(recording);
+        const newAudio = URL.createObjectURL(recording);
+        console.log(URL.revokeObjectURL(newAudio));
+
+        const sphere = new THREE.SphereBufferGeometry(5, 20, 20);
+        const material1 = new THREE.MeshPhongMaterial({
+          color: 0xffaa00,
+          flatShading: true,
+        });
+        const object1 = new THREE.Mesh(sphere, material1);
+        object1.position.set(0, 50, -150);
+        scene.add(object1);
+        keyboardUI.destroy();
+
+        const listener = new THREE.AudioListener();
+        camera.add(listener);
+
+        const sound = new THREE.PositionalAudio(listener);
+        const audioLoader = new THREE.AudioLoader();
+        audioLoader.load(URL.createObjectURL(recording), function (buffer) {
+          sound.setBuffer(buffer);
+          sound.setRefDistance(20);
+          sound.setLoop(true);
+          sound.play();
+        });
+        object1.add(sound);
+        stopButton.remove();
+
+        controls = new FirstPersonControls(camera, renderer.domElement);
+        controls.movementSpeed = 50;
+        controls.lookSpeed = 0.06;
+        controls.noFly = true;
+        controls.lookVertical = true;
+        startControls = true;
+      };
+
+      const startRecording = () => {
+        startButton.remove();
+        stopButton = document.createElement(`button`);
+        stopButton.innerHTML = `Stop recording`;
+        const $buttons = document.querySelector(`.buttons`);
+        $buttons.appendChild(stopButton);
+        stopButton.addEventListener(`click`, stopRecording);
+        piano.connect(recorder);
+        recorder.start();
+      };
+
+      const startButton = document.querySelector(`.start`);
+      startButton.addEventListener(`click`, startRecording);
+
+      const loadPiano = () => {
+        document.querySelector('.loading').style.display = 'none';
+        piano = samples['piano'];
+        piano.release = 0.5;
+        piano.toDestination();
+
+        keyboardUI = new Nexus.Piano('keyboard', {
+          size: [1300, 250],
+          lowNote: 0,
+          highNote: 96,
+        });
+
+        const midiValue = 60;
+        const note = Tone.Frequency(midiValue, 'midi').toNote();
+        console.log(note);
+
+        keyboardUI.on('change', (note) => {
+          if (note.state === true) {
+            piano.triggerAttack(Tone.Frequency(note.note, 'midi').toNote());
+          } else if (note.state === false) {
+            piano.triggerRelease(Tone.Frequency(note.note, 'midi').toNote());
+          }
+        });
+
+        document.addEventListener('keydown', (e) => {
+          if (
+            e.key == 0 ||
+            e.key == 1 ||
+            e.key == 2 ||
+            e.key == 3 ||
+            e.key == 4 ||
+            e.key == 5 ||
+            e.key == 6 ||
+            e.key == 7
+          ) {
+            octave = e.key;
+            document.querySelector('.octave').innerHTML = `Octave : ${e.key}`;
+          } else {
+            const amount = octave * 12;
+            console.log(amount);
+            const keyIndex = keyTones[e.key] + amount;
+            keyIndex !== undefined && !keyboardUI.keys[keyIndex]._state.state
+              ? keyboardUI.toggleIndex(keyIndex, true)
+              : null;
+          }
+        });
+
+        document.addEventListener('keyup', (e) => {
+          if (
+            e.key == 0 ||
+            e.key == 1 ||
+            e.key == 2 ||
+            e.key == 3 ||
+            e.key == 4 ||
+            e.key == 5 ||
+            e.key == 6 ||
+            e.key == 7
+          ) {
+            octave = e.key;
+            document.querySelector('.octave').innerHTML = `Octave : ${e.key}`;
+          } else {
+            const amount = octave * 12;
+            console.log(amount);
+            const keyIndex = keyTones[e.key] + amount;
+            keyIndex !== undefined && keyboardUI.keys[keyIndex]._state.state
+              ? keyboardUI.toggleIndex(keyIndex, false)
+              : null;
+          }
+        });
+
+        const canvas = document.querySelector('#c');
+        renderer = new THREE.WebGLRenderer({ canvas });
+
+        camera = new THREE.PerspectiveCamera(
+          50,
+          window.innerWidth / window.innerHeight,
+          1,
+          10000
+        );
+        camera.position.set(0, 20, 0);
+
+        scene = new THREE.Scene();
+
+        light = new THREE.DirectionalLight(0xffffff);
+        light.position.set(0, 0.5, 1);
+        scene.add(light);
+
+        const geometry = new THREE.PlaneGeometry(1000, 1000);
+        const material = new THREE.MeshPhongMaterial({
+          color: 0x6622aa,
+          flatShading: true,
+          side: THREE.DoubleSide,
+        });
+        const plane = new THREE.Mesh(geometry, material);
+        plane.position.set(0, 0, -100);
+        plane.rotation.x = Math.PI / 2;
+        scene.add(plane);
+
+        const resizeRendererToDisplaySize = (renderer) => {
+          const needResize =
+            canvas.width !== window.innerWidth ||
+            canvas.height !== window.innerHeight;
+          if (needResize) {
+            renderer.setSize(window.innerWidth, window.innerHeight);
+          }
+          return needResize;
+        };
+
+        animate();
+
+        function animate() {
+          if (startControls == true) {
+            controls.update(clock.getDelta());
+          }
+          requestAnimationFrame(animate);
+          resizeRendererToDisplaySize(renderer);
+          renderer.render(scene, camera);
+        }
+      };
+
+      Tone.loaded().then(loadPiano);
+    </script>
+  </body>
+</html>
