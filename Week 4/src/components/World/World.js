@@ -192,7 +192,7 @@ const World = observer(() => {
     const Earth = function () {
       this.mesh = new THREE.Object3D();
 
-      // create earthSphere with ocean color
+
       earthGeom = new THREE.OctahedronGeometry(55, 3);
       earthMat = new THREE.MeshPhongMaterial({
         shininess: 15,
@@ -204,7 +204,7 @@ const World = observer(() => {
 
       earthSphere.receiveShadow = true;
 
-      //create northPole
+
       northPoleGeom = new THREE.SphereGeometry(35, 5, 5);
 
       northPoleGeom.vertices[0].y -= 2;
@@ -224,7 +224,7 @@ const World = observer(() => {
       northPole.position.set(0, 24, 0);
       northPole.name = "northPole";
 
-      //create southPole
+
       southPoleGeom = new THREE.SphereGeometry(35, 5, 5);
 
       southPoleGeom.vertices[0].y -= 2;
@@ -246,7 +246,7 @@ const World = observer(() => {
       southPole.position.set(0, -24, 0);
       southPole.name = "southPole";
 
-      // create continent
+
       contiGeom = new THREE.DodecahedronGeometry(25, 1);
 
       contiGeom.mergeVertices();
@@ -630,13 +630,11 @@ const World = observer(() => {
             intersects[0].object.name !== "northPole" &&
             intersects[0].object.name !== "southPole"
           ) {
-            const searchPin = (pin) => {
-              return (pin.currentData = intersects[0].object.currentData);
-            };
-            const rightPin = pins.find(searchPin);
-            titleRef.current.innerHTML = `Explore the environment created by <span style="color:#FF6541;">${rightPin.currentData}</span>`;
+
             pins.forEach((pin) => {
               if (pin.name === intersects[0].object.name) {
+
+                titleRef.current.innerHTML = `Explore the environment created by <span style="color:#FF6541;">${pin.currentData}</span>`;
                 if (pin.children[0]) {
                   if (pin.children[0].isPlaying === true) {
                   } else {

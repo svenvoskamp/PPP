@@ -94,8 +94,8 @@ const Create = () => {
   ambience.setMediaElementSource(ambienceElement);
   ambience.setLoop(true);
   if (type === "whale") {
-  ambience.setVolume(0.03);
-  }else {
+    ambience.setVolume(0.03);
+  } else {
     ambience.setVolume(0.1);
   }
   ambience.play();
@@ -441,19 +441,16 @@ const Create = () => {
             animal.position.x = Math.floor(Math.random() * sum);
             if (note >= 0 && note <= 36) {
               if (mount.current != undefined) {
-
                 animal.scale.set(1, 1, 1);
               }
             }
             if (note >= 37 && note <= 72) {
               if (mount.current != undefined) {
-
                 animal.scale.set(0.6, 0.6, 0.6);
               }
             }
             if (note >= 73) {
               if (mount.current != undefined) {
-
                 animal.scale.set(0.3, 0.3, 0.3);
               }
             }
@@ -464,7 +461,6 @@ const Create = () => {
             if (animal.scale.x === 0.3) {
               if (type === "lion") {
                 animalSound.setBuffer(animalBuffer2);
-
               } else {
                 animalSound.setBuffer(animalBuffer);
               }
@@ -486,7 +482,6 @@ const Create = () => {
                 animalSound.setBuffer(animalBuffer2);
               } else {
                 animalSound.setBuffer(animalBuffer);
-
               }
               if (type === "polarBear") {
                 animalSound.setVolume(5);
@@ -506,7 +501,6 @@ const Create = () => {
                 animalSound.setBuffer(animalBuffer3);
               } else {
                 animalSound.setBuffer(animalBuffer);
-
               }
               if (type === "polarBear") {
                 animalSound.setVolume(5);
@@ -534,16 +528,16 @@ const Create = () => {
 
     const createAnim = () => {
       if (mount.current != undefined) {
-      gsap.to(camera.position, {
-        duration: 2,
-        y: 200,
-        onComplete: function () {
-          gsap.to("#keyboard", { opacity: 1, duration: 2 });
-          canPlay = true;
-          gsap.to(".flex__first", { opacity: 1, duration: 2 });
-        },
-      });
-    }
+        gsap.to(camera.position, {
+          duration: 2,
+          y: 200,
+          onComplete: function () {
+            gsap.to("#keyboard", { opacity: 1, duration: 2 });
+            canPlay = true;
+            gsap.to(".flex__first", { opacity: 1, duration: 2 });
+          },
+        });
+      }
     };
 
     const loadPiano = () => {
@@ -739,12 +733,11 @@ const Create = () => {
   const toDatabase = async (e) => {
     e.preventDefault();
 
- //   let localHost = recordingURL.replace("http://localhost:3000/", "");
- //   let netlify = localHost.replace("https://thirsty-villani-85de29.netlify.app/", "");
-    let firebaseURL = recordingURL.replace("https://wwfxdevinexppp.web.app/", "");
+    let localHost = recordingURL.replace("http://localhost:3000/", "");
+    //   let netlify = localHost.replace("https://thirsty-villani-85de29.netlify.app/", "");
+    //   let firebaseURL = recordingURL.replace("https://wwfxdevinexppp.web.app/", "");
 
-
-    const audioRef = await firebase.storage().ref("audio/" + firebaseURL);
+    const audioRef = await firebase.storage().ref("audio/" + localHost);
     const pinAudio = audioRef.name;
     await audioRef.put(recording);
     //
@@ -758,7 +751,7 @@ const Create = () => {
         posX: animal.position.x,
         posY: animal.position.y,
         posZ: animal.position.z,
-        rotY: animal.rotation.y
+        rotY: animal.rotation.y,
       });
       pinAnimals.push(createdAnimal);
     });
